@@ -1,0 +1,604 @@
+1.db.collection-name.insertOne ---> To insert one data
+2.db.collection-name.insertMany([
+    {name :"Complete web development"},
+    {name :"Next level web development"}-----> to insert multiple data
+    ]) 
+
+3.db.createCollection("collection-name")---------->to create a collection in database
+
+4.db.getCollection("collection-name")---------->to go in  a collection in database
+
+5.database collection e jabo + add data + import json or csv file + select + stop in error+ ok----------> to insert data in a collection
+
+6.db.collection-name.findOne({age : 17})  ---------> to find specific one data
+
+7.db.collection-name.findOne({gender : "Male"}, {name : 1})  ---------> to find specific one data with specific one information name
+
+8.db.collection-name.find({gender : "Female"}) ---------> to find all data who are female in a collection
+
+9.field filtering --------> db.collection-name.find({gender : "Female"}, {name : 1, email : 1, phone : 1 , gender : 1}) -->to find all data who are female in a collection with specific information like name,email,phone,gender by making them true by giving 1
+
+10.field filtering with another project method  bu t not applicable for findOne method ------------> find({gender : "Female"}).project({email : 1, phone : 1 , gender : 1})
+
+
+
+                                                          ===========================================================              
+                                                          =============Comparison Query Operator=====================
+                                                          ===========================================================
+
+
+
+1.search mongodb operator +  operators mongodb manual  +  query and projection operator + Comparison Query Operator + $eq
+
+                                                          ==========================$eq(equal)=====================   
+
+
+1.db.collection-name.findOne({gender : { $eq : "Male"}})        ------------------> one information where gender equal to Male
+
+2.2.db.collection-name.find({gender : { $eq : "Male"}})        ------------------> All the information where gender equal to Male
+
+                                                              
+                                                             ==========================$ne(not equal)===================== 
+
+
+1.db.collection-name.find({gender : { $ne : "Male"}}) ---------------> All the information where gender not equal to Male
+
+
+                                                             ==========================$gt(greater than)===================== 
+
+1.db.collection-name.find({age : { $gt : 18}})        ------------> All the information where age greater than 18
+
+
+                                                             ==========================$gte(greater than or equal)===================== 
+                                                             
+1.db.collection-name.find({age : { $gte : 18}}).sort({age : 1}) --------------> All the information where age greater than  or equal to 18
+
+
+                                                             ==========================$lt===================== 
+
+1.db.collection-name.find({age : { $lt : 18}}).sort({age : 1}) ----------------> All the information where age less than  18
+
+
+                                                              ==========================$lte===================== 
+
+
+1.db.collection-name.find({age : { $lte : 18}}).sort({age : 1})   ----->        All the information where age less than  or equal to 18
+
+
+                                    =================Combination of two operator(, diye implicit and condition, implicit and operator is a logical query operator)============
+                                                             =================implicit and condition over one(age) field============================
+
+
+1.db.test1.find({ age : {$gte : 18 , $lt : 30} }, {age : 1}).sort({age : 1})    ----------> All the information where age greater than  or equal to 18  and less than 30
+
+
+                                                             =================implicit and condition over multiple(age and gender) field============================
+
+1.db.test1.find({ gender: "Female", age : {$gte : 18 , $lt : 30} }, {age : 1 , gender : 1}).sort({age : 1}) -------------->All the information where age greater than  or equal to 18  and less than 30 and gender Female
+
+
+                                                              ================$in filter out all the information match with any one data of the age array=============
+
+1.db.test1.find({ gender: "Female", age : {$in : [18,20]} }, {age : 1 , gender : 1}).sort({age : 1})  ----> All the information located in the array (age 18 r 20 er sathe mil ase emn sob value paoya jabe)
+
+
+                                                              ================$nin filter out all the information dont match with the age array=============
+
+
+1.db.test1.find({ gender: "Female", age : {$nin : [18,20]} }, {age : 1 , gender : 1}).sort({age : 1})    ----> All the information not located in the array (age 18 r 20 er sathe mil nai emn sob value paoya jabe)
+
+
+                                                              ==================Combination of $in and $nin==============================
+
+1.db.test1.find(
+    { gender: "Female", 
+    age : {$nin : [18,20]},
+     interests: {$in : ["Cooking","Gaming"]} 
+    },
+    {age : 1 , gender : 1, interests :1}).sort({age : 1})------------>  Cooking othoba Gaming ase and age 18 ba 20 na emn sob information
+
+
+
+                                                            ===========================================================              
+                                                            =============Logical Query Operator========================
+                                                            ===========================================================
+
+                                                            
+                                                           =======================implicit $and ba ,====================
+
+
+1.db.test1.find({ age : {$ne : 18 , $lte : 30} }) -------------------> All the information where age is not equal to 18 and less than or equal to 30
+
+
+
+                                                            =======================explicit $and========================
+
+1.db.test1.find({ $and : [
+    {gender : "Female"},
+    { age : {$ne : 15}} , 
+    {age : {$lte : 30} }
+    ]}).project({
+        age:1,
+        gender : 1
+    }).sort({
+        age:1
+    })                               -------------------------------------------> All the information where age is not equal to 15 and less than or equal to 30 and gender female
+
+
+
+                                                          ======================explicit $or============================
+
+
+
+1.db.test1.find({ $or : [
+    {interests : "Traveling"},
+    {interests : "Cooking"},
+    {"skills.name" : "JAVASCRIPT"},
+    {"skills.name" : "PYTHON"}
+    ]
+    }).project({
+        interests:1,
+        skills:1
+    })                         ------------------------->Travelling othoba cooking othoba javascript othoba python  emn data niye ashbe
+
+
+
+                                       =============================same field er khetre $or er bodole $in use kora jay===============================
+
+
+1.db.test1.find(
+    {"skills.name" : {$in : [ "JAVASCRIPT", "PYTHON"]}
+    }).project({
+        skills:1
+    })                    ---------------------------->PYTHON Othoba JAVASCRIPT ase emn data anbe
+
+
+
+
+
+
+
+                                                            ===========================================================              
+                                                            =============Element Query Operator========================
+                                                            ===========================================================
+
+
+                                              =====================$exists(kono field kono document e exist kore kina ta insure kore)===================
+
+1.db.test1.find({ age : { $exists  : true }})--------->true tai emn data dekhabe jetate age field exist kore
+2.db.test1.find({ age : { $exists  : false }})--------->false tai emn data dekhabe jetate age field exist kore na
+
+                                            ======================$type(To find speciphic type data in a specific field)========================
+
+1db.test1.find({ age : { $type  : "string" }})--------------------->To find the json data include string data in age field(string ase kina)
+
+
+
+
+                                                            ===========================================================              
+                                                            ===============Array Query Operator========================
+                                                            ===========================================================
+
+
+
+
+                               ============================$size(find if any array exist of speciphic size in any document)==========================
+
+1.db.test1.find({ friends : { $size  : 4 }}).project({friends:1}) ------------------->All the data which hava friends array with length 4
+
+2.db.test1.find({ friends : { $size  : 0 }}).project({friends:1}) ------------------->All the data which hava friends array with length 0
+
+
+                             ===============================Find such data where Cooking is in the second position of the interests array==============
+
+
+1.db.test1.find({ "interests.2" : "Cooking"}).project({interests:1})
+
+                           ===================All the data where interest are in ["Cooking","Writing","Reading"] this pattern . exactly milabe===============
+
+1.db.test1.find({ interests : ["Cooking","Writing","Reading"]}).project({interests:1})
+
+
+                                              ===============================================$all====================================================
+
+
+1.db.test1.find({ interests: { $all : ["Cooking","Writing","Reading"]}}).project({interests:1})---------------->cooking and reading and writing thaklei hoilo aksathe. jekono position ei thak
+
+
+
+                                               ===========================Exact match kore object==================================
+
+1.db.test1.find({ 
+    skills: {name: "JAVASCRIPT",
+        level:"Intermidiate",
+        isLearning:false
+    }
+}).project({skills:1})---------------->Exactly {name: "JAVASCRIPT",
+        level:"Intermidiate",
+        isLearning:false
+    }   emn thakle asbe
+
+
+
+                                            ==============================$elemMatch(Exact thakar dorker nai field gula jekono akta thaklei hbe)==================
+
+
+1.db.test1.find({ 
+    skills: {$elemMatch: {name: "JAVASCRIPT",
+        level:"Intermidiate"
+    }
+}
+    
+}).project({skills:1})
+
+
+
+
+                                                                                =================Update operator================
+
+
+
+1.update operator + field update operator + $set
+2.db.test1.updateOne(
+    {_id:ObjectId("6406ad65fc13ae5a400000c7")},
+    {
+        $set:{
+            age:60
+        }
+    },
+); ------------------------------------------------------>update age field
+
+
+                                                       ===========================================================================================
+                                                       ======================================$set  vs $addToSet===================================
+                                                       ===========================================================================================
+
+1.for primitive data type $set is good. for non primitive $addToSet is good.
+
+                                                       =======================================Problem of $set=====================================
+
+
+
+1.Convert "interests" : [ "Gaming", "Writing", "Reading" ]  to interests: "Gaming".Fully modified it.
+  Means convert an array to string.
+  If we want this ("interests" : [ "Gaming", "Reading", "Writing" ]) Then $set is perfect
+
+
+                                                       ======================================advantage $addToSet===================================
+
+1.Update operator + array update operator + $addToSet
+2.Add new value . not fully modified it.
+3.db.test1.updateOne(
+    {_id:ObjectId("6406ad65fc13ae5a400000c7")},
+    {
+        $addToSet:{
+            interests: "Playing"
+        }
+    },
+);                        
+output:"interests" : [
+		"Gaming",
+		"Writing",
+		"Reading",
+		"Playing"
+	], ------------------------------->Playing is added. ager data same ase. Abar add korte chaile add hbe na. same data add hoy na.
+
+
+
+4.db.test1.updateOne(
+    {_id:ObjectId("6406ad65fc13ae5a400000c7")},
+    {
+        $addToSet:{
+            interests: { $each : ["Cooking","Driving"]}
+        }
+    },
+);----------------------------------------------------------------------->To add property more than 1 use $each with $addToSet
+5.output:"interests" : [
+		"Gaming",
+		"Writing",
+		"Reading",
+		"Playing",
+                "Cooking",
+                "Driving"
+	],
+6.If we dont use $each
+db.test1.updateOne(
+    {_id:ObjectId("6406ad65fc13ae5a400000c7")},
+    {
+        $addToSet:{
+            interests: ["Cooking","Driving"]
+        }
+    },
+);
+
+7.output:"interests" : [
+		"Gaming",
+		"Writing",
+		"Reading",
+		"Playing",
+                ["Cooking",
+                "Driving"]
+	],   ------------------------> Item will be added as array
+
+
+                                                  ===========================$push(can enter duplicate value)==========================
+
+1.db.test1.updateOne(
+    {_id:ObjectId("6406ad65fc13ae5a400000c7")},
+    {
+        $push:{
+            interests: { $each : ["Cooking","Driving"]}
+        }
+    },
+);
+2.Output->"interests" : [
+		"Gaming",
+		"Writing",
+		"Reading",
+		"Playing",
+		"Cooking",
+		"Driving",
+		"Cooking",
+		"Driving"
+	],------------------------------------>"Cooking","Driving"  added again
+
+
+                                               ===========================$unset(to delete a field)=================================
+
+
+1.db.test1.updateOne(
+    {_id:ObjectId("6406ad65fc13ae5a400000c7")},
+    {
+        $unset:{ age:1 }---------------->1 mane true. delete age field
+    }
+);
+
+2.db.test1.updateOne(
+    {_id:ObjectId("6406ad65fc13ae5a400000c7")},
+    {
+        $unset:{ skills: ""}
+    }
+);
+
+
+
+                                            =========================================$pop===============================================
+
+
+1.  1 mane last er element remove kora
+2. -1 mane first er element remove kora
+3.db.test1.updateOne(
+    {_id:ObjectId("6406ad65fc13ae5a400000c7")},
+    {
+        $pop:{ friends: 1}
+    }
+);-------------------->friends array er last er element remove korsi
+4.db.test1.updateOne(
+    {_id:ObjectId("6406ad65fc13ae5a400000c7")},
+    {
+        $pop:{ friends: -1}
+    }
+);---------------------------------------->First element of friends element removed
+
+
+                                        ==============================$pull(specific element ke remove kora)===========================
+
+1.db.test1.updateOne(
+    {_id:ObjectId("6406ad65fc13ae5a400000c7")},
+    {
+        $pull:{ friends: "Rasel Ahmed"}
+    }
+);---------------------------------------------------->remove Rasel Ahmed from the array
+
+
+                                       ==============================$pullAll(remove more than one element)===========================
+
+
+1.db.test1.updateOne(
+    {_id:ObjectId("6406ad65fc13ae5a400000c7")},
+    {
+        $pullAll:{ education : [
+		{
+			"degree" : "Associate of Science",
+			"major" : "Philosophy",
+			"institute" : "Sauder School of Business",
+			"year" : 1993
+		},
+		{
+			"degree" : "Doctor of Medicine",
+			"major" : "Communications",
+			"institute" : "Guangxi University for Nationalities",
+			"year" : 1995
+		},
+		{
+			"degree" : "Associate of Science",
+			"major" : "Computer Science",
+			"institute" : "University of Finance and Management in Bialystok",
+			"year" : 1999
+		}
+	],}
+    }
+);                                 ----------------------------------------------->remove full education array
+
+
+
+2.db.test1.updateOne(
+    {_id:ObjectId("6406ad65fc13ae5a400000c7")},
+    {
+        $pullAll:{ languages : ["Lao", "Czech"
+	],}
+    }
+);  ----------------------------------------------------------->"Lao", "Czech" value removed from languages array
+
+
+
+                                                                 ===========================================================              
+                                                                 ===============Doing change in object======================
+                                                                 ===========================================================
+
+
+
+                                                                 ==========================$set============================
+
+
+1.db.test1.updateOne(
+    {_id:ObjectId("6406ad65fc13ae5a400000c7")},
+    {
+        $set:{ "address.city" : "dhaka"
+	}
+    }
+);
+
+
+2.db.test1.updateOne(
+    {_id:ObjectId("6406ad65fc13ae5a400000c7")},
+    {
+        $set:{ "address.city" : "dhaka",
+               "address.country" : "Bangladesh",
+	}
+    }
+);
+
+
+                                                             =====================Update array of object=======================                                           
+
+
+1.$update Mongodb Mannual
+
+
+2.db.test1.updateOne(
+    {_id : ObjectId("6406ad63fc13ae5a40000066"),"education.major":"History"},
+    {
+        $set:{ 
+            "education.$.major":"CSE"
+	}
+    }
+);------------------------------------------------------------------------------------->"education.major":"History" diye select kore "education.$.major":"CSE" banano
+
+
+
+                                                           ============================$inc============================================
+
+
+1.db.test1.updateOne(
+    {_id : ObjectId("6406ad63fc13ae5a40000066")},
+    {
+        $inc:{ 
+            age : 1
+	}
+    }
+);                               ------------------------------>age field 1 kore barbe
+
+2.db.test1.updateOne(
+    {_id : ObjectId("6406ad63fc13ae5a40000066")},
+    {
+        $inc:{ 
+            age : 2
+	}
+    }
+);                              ------------------------------>age field 2 kore barbe
+
+
+
+
+                                                        =======================================Delete===================================
+
+
+1.db.test1.deleteOne(
+    {_id : ObjectId("6406ad63fc13ae5a40000066")}) ------------------------------->delete document
+
+
+2.db.test.drop({ writeConcern: { w : 1} } )  -----------------------------------> delete test database
+
+
+
+
+Practice Task: In-Depth Exploration of MongoDB Queries
+
+1.Find all documents in the collection where the age is greater than 30, and only return the name and email fields.
+-------------->db.test1.find({age : { $gt : 30}},{name:1,email:1})
+
+
+
+2.Find documents where the favorite color is either "Maroon" or "Blue."
+----------------------------->db.test1.find({  $or : [{favoutiteColor : "Maroon"}, 
+                        {favoutiteColor : "Blue"}]},{favoutiteColor:1})
+
+
+
+3.Find all documents where the skills is an empty array.
+-------------------------------------->db.test1.find({  skills : {$eq : []}, },{skills:1})
+
+
+4.Find documents where the person has skills in both "JavaScript" and "Java."
+-------------------------------------->db.test1.find({  $and : [
+                         {"skills.name" :  "JAVASCRIPT"}, 
+                         {"skills.name" :  "JAVA"}
+    
+                        ]
+    
+},{skills:1})
+
+
+5.Add a new skill to the skills array for the document with the email "aminextleveldeveloper@gmail.com" The skill is {"name": "Python", "level": "Beginner", "isLearning": true}.
+
+------------------->db.test1.find({"_id" : ObjectId("6406ad63fc13ae5a40000065")})
+------------------->db.test1.updateOne(
+    {_id:ObjectId("6406ad63fc13ae5a40000065")},
+    {
+        $set:{
+            "email": "aminextleveldeveloper@gmail.com"
+        }
+    },
+);----------->update the email
+------------------->db.test1.find({ "email": "aminextleveldeveloper@gmail.com" })--------->see the update email and skills
+------------------->db.test1.updateOne(
+    {email :"aminextleveldeveloper@gmail.com"},
+    {
+        $addToSet:{
+            skills: {"name": "Python", "level": "Beginner", "isLearning": true}
+        }
+    },
+); ------------------------>update the skills
+
+
+
+
+6.Add a new language "Spanish" to the list of languages spoken by the person.
+------------------------>db.test1.updateOne(
+    {email :"aminextleveldeveloper@gmail.com"},
+    {
+        $addToSet:{
+            languages: "Spanish"
+        }
+    },
+); 
+
+
+
+7.Remove the skill with the name "Kotlin" from the skills array.
+---------------------->db.test1.updateOne(
+    {email :"aminextleveldeveloper@gmail.com"},
+    {
+        $addToSet:{
+            skills: {
+			"name" : "Kotlin",
+			"level" : "Expert",
+			"isLearning" : false
+		},
+        }
+    },
+); -------------------------------->update skills with kotlin
+
+---------------------------------------->db.test1.updateOne(
+    {email :"aminextleveldeveloper@gmail.com"},
+    {
+        $pop:{
+            skills: 1
+        }
+    },
+);  ----------------------->remove kotlin
+
+
+
+
