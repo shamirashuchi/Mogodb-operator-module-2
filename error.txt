@@ -1,0 +1,15 @@
+
+
+
+                                                       ======================================================================================
+                                                       ===========================================Errors=====================================
+                                                       ======================================================================================
+
+1.{
+	"message" : "Can't $out to internal database: config",
+	"ok" : 0,
+	"code" : 31321,
+	"codeName" : "Location31321"
+}
+
+admin,config and local are internal database.*create your own database.And use $out. Error will be gone.

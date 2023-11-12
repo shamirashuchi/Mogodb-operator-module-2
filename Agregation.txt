@@ -1,0 +1,897 @@
+
+                           =============================================
+                           ====================Aggregation==============
+                           =============================================
+
+1.Agregation is a way of processing a large number of documents in a collection by means of passing them through different stages.  The stages make up what is known as a pipeline. The stages in a pipeline can filter, sort,group,reshape and modify documents that pass through the pipeline.
+2.mongodb aggregation + studio 3T
+
+2.Syntax
+     db.collection.aggregate(
+     [
+          //stage 1
+          {}, -> pipeline
+          //stage 2
+          {} , -> pipeline
+           //stage 3
+          {} -> pipeline
+     ]
+)
+
+
+3.   Data Flow
+                  Collection--->Stage1----->Stage2------>stage3------>Final output
+                                pipeline    pipeline     pipeline     pipeline
+
+
+4.db.cousins.aggregate([
+       //filter out the cousins who have an exam
+       { $match: { hasExam :  { $ne: true} } },
+       //filter out the cousins who have a budget less than 500
+       {$match: { isSick : false } },
+       //sort by age
+        {$sort: { age : -1}},
+        //limit by 2
+        {$limit : 2}
+         //calculate the budget
+         {
+          $group:
+          {
+             _id:"null",
+             totalBudget: { $sum: "$budget"},
+             cousins: {$push: "$name"}
+           }
+           }
+         ])
+
+
+                                                                   ====================Fetch all the document================
+
+1.db.test1.aggregate([])
+
+                                                                  ============================$match=========================
+
+1.db.test1.aggregate([
+    //stage-1
+    {$match : { gender : "Male"}}
+    ])----------------------------------> All the collection where gender Male  condition matched
+
+2.db.test1.aggregate([
+    //stage-1
+    {$match : { gender : "Male"}},
+    //stage-2
+    {$match : { age : {$lt : 30}}},
+    //stage-3
+    {  $project : { gender : 1, age : 1, name : 1 }}
+])                                                    ---------------------------->use of $match multiple times
+
+
+
+
+
+                                                                 ======================multiple condition=====================
+
+1.db.test1.aggregate([
+    //stage-1
+    {$match : { gender : "Male", age : {$lt : 30}}}
+    ])
+
+                                                                ============================$project===========================
+
+1.db.test1.aggregate([
+    //stage-1
+    {$match : { gender : "Male", age : {$lt : 30}}},
+   
+    //stage-2
+    {  $project : { gender : 1, age : 1, name : 1 }}
+])---------------------------------------------------------->showing data of specific field(gender,name,age)
+
+
+2.db.test1.aggregate([
+     //stage-2
+    {  $project : { gender : 1, age : 1, name : 1 }},
+    //stage-1
+    {$match : { gender : "Male", age : {$lt : 30}}}
+])------------------------------------------------------------>showing data of specific field(gender,name,age)
+
+3.db.test1.aggregate([
+     //stage-2
+    {  $project : { gender : 1, name : 1 }},
+    //stage-1
+    {$match : { gender : "Male", age : {$lt : 30}}}
+])-------------------------------------------------------------->stage 2 te age : 1 nai.stage 2 te sob document theke gender r name filter kortese. stage 2 theke stage 1 e gele age passe na. tai empty object disse.
+
+
+
+
+
+===============================$addField(to add field) and $out(to create new collection with previous and added field)  and  $merge(to add new field in original database)==============================
+
+
+1.$addFields add data in the pipeline but not in the original document
+2.db.test1.aggregate([
+    //stage-1
+    {$match : { gender : "Male"}},
+    //stage-2
+    {$addFields : { Course : "Level-2", eduTech:  "Programmming Hero", monerMoto: "Moner Iccha"}},
+    //stage-3
+    {  $project : { gender : 1, age : 1, name : 1,Course:1 ,eduTech:1, monerMoto: 1}}
+])----------------------------------------------------------------------------->Course : "Level-2", eduTech:  "Programmming Hero", monerMoto: "Moner Iccha" data added where gender is Male in the pipeline but not in the original document
+3.db.test1.aggregate([
+    //stage-1
+    {$match : { gender : "Male"}},
+    //stage-2
+    {$addFields : { Course : "Level-2", eduTech:  "Programmming Hero", monerMoto: "Moner Iccha"}},
+    //stage-3
+    {  $project : { gender : 1, age : 1, name : 1,Course:1 ,eduTech:1, monerMoto: 1}},
+    //stage-4
+    { $out : "course-students"}
+])----------------------------------------------------------------------------------->course-students collection created where which data matched with gender Male oi datate extra field hisebe  Course : "Level-2", eduTech:  "Programmming Hero", monerMoto: "Moner Iccha"  egula add hoise
+4.Output:
+{
+	"_id" : ObjectId("6406ad65fc13ae5a400000c4"),
+	"name" : {
+		"firstName" : "Galvan",
+		"lastName" : "Clute"
+	},
+	"gender" : "Male",
+	"age" : 8,
+	"Course" : "Level-2",
+	"eduTech" : "Programmming Hero",
+	"monerMoto" : "Moner Iccha"
+},
+
+5.db.test1.aggregate([
+    //stage-1
+    {$match : { gender : "Male"}},
+    //stage-2
+    {$addFields : { Course : "Level-2", eduTech:  "Programmming Hero", monerMoto: "Moner Iccha"}},
+    //stage-3
+    {  $project : { gender : 1, age : 1, name : 1,Course:1 ,eduTech:1, monerMoto: 1}},
+    //stage-4
+    { $merge : "test1"}--------------------------------->test1 collection e jara Male tader datate Course : "Level-2", eduTech:  "Programmming Hero", monerMoto: "Moner Iccha" field add hbe. Original document e change hbe
+])
+
+
+                                                    ------------------------------------------------$(group)-----------------------------------------------------
+
+1.db.test1.aggregate([
+    //stage-1
+    {$group : { _id : "$address.country"}}
+])------------------------------------------------------------->test1 collection create 46 group according to country
+
+
+
+
+                                                   =================================================$(sum)========================================================
+
+
+
+
+1.$sum is a accumulator operator. 1 ta 1 ta kore sum korbe
+2.db.test1.aggregate([
+    //stage-1
+    {$group : { _id : "$address.country", count : {$sum :1}}}
+])--------------------------------------------------------------->count : 2 mane ukrain  desh er data ase 2 ta. evabe sob group er data count dekhabe
+
+3.db.test1.aggregate([
+    //stage-1
+    {$group : { _id : null, count : {$sum : "$salary"}}}
+])---------------------------------------->sob document ke null _id er under e anbe. mane kono _id nai.$salary field ke 1 ta 1 ta kore jog korbe
+
+
+                                                 ====================================================$max============================================================
+
+
+
+
+1.db.test1.aggregate([
+    //stage-1
+    {$group : { _id : null, count : {$sum : "$salary"},
+        maxSalary : {$max: "$salary"}
+    }}
+])
+2.Output:
+{
+	"_id" : null,
+	"count" : 30400,
+	"maxSalary" : 499
+}
+
+
+                                                 ====================================================$min=============================================================
+
+
+
+
+
+1.db.test1.aggregate([
+    //stage-1
+    {$group : { _id : null, count : {$sum : "$salary"},
+        maxSalary : {$max: "$salary"},
+        minSalary : {$min: "$salary"}
+    }}
+])
+2.Output:
+{
+	"_id" : null,
+	"count" : 30400,
+	"maxSalary" : 499,
+	"minSalary" : 105
+}
+
+                                               =======================================================$avg===============================================================
+
+
+
+
+1.db.test1.aggregate([
+    //stage-1
+    {$group : { _id : null, count : {$sum : "$salary"},
+        maxSalary : {$max: "$salary"},
+        minSalary : {$min: "$salary"},
+        avgSalary : {$avg: "$salary"}
+    }}
+])
+2.Output:
+{
+	"_id" : null,
+	"count" : 30400,
+	"maxSalary" : 499,
+	"minSalary" : 105,
+	"avgSalary" : 307.07070707070704
+}
+                                   
+
+                                               =======================================================$project========================================================
+
+
+
+
+1.db.test1.aggregate([
+    //stage-1
+    {$group : { _id : null, 
+        totalSalary : {$sum : "$salary"},
+        maxSalary : {$max: "$salary"},
+        minSalary : {$min: "$salary"},
+        avgSalary : {$avg: "$salary"}
+    }},
+    //stage-2
+    {
+        $project:{
+            totalSalary:1,
+             maxSalary :1,
+             minSalary :1,
+             averagesalary: "$avgSalary" ---------------->avgSalary field ke  averagesalary hisebe namkoron kore dekhtesi
+        }
+    }
+])
+2.Output:
+{
+	"_id" : null,
+	"totalSalary" : 30400,
+	"maxSalary" : 499,
+	"minSalary" : 105,
+	"averagesalary" : 307.07070707070704
+}
+
+
+
+                                                      ========================================$subtract=========================================
+
+
+
+
+
+1.db.test1.aggregate([
+    //stage-1
+    {$group : { _id : null, 
+        totalSalary : {$sum : "$salary"},
+        maxSalary : {$max: "$salary"},
+        minSalary : {$min: "$salary"},
+        avgSalary : {$avg: "$salary"}
+    }},
+    //stage-2
+    {
+        $project:{
+            totalSalary:1,
+             maxSalary :1,
+             minSalary :1,
+             averagesalary: "$avgSalary",
+             rangeBetweenMaxandMin: { $subtract: ["$maxSalary","$minSalary"]}
+        }
+    }
+]);
+
+2.output:
+{
+	"_id" : null,
+	"totalSalary" : 30400,
+	"maxSalary" : 499,
+	"minSalary" : 105,
+	"averagesalary" : 307.07070707070704,
+	"rangeBetweenMaxandMin" : 394
+}
+
+
+
+
+
+                                                 ====================================================$push============================================================
+1.db.test1.aggregate([
+    //stage-1
+    {$group : { _id : "$address.country", count : {$sum :1},amkDekhaoName: {$push : "$name"}}}
+]) 
+
+2.Output
+{
+	"_id" : "Ukraine",
+	"count" : 2,
+	"amkDekhaoName" : [
+		{
+			"firstName" : "Leontyne",
+			"lastName" : "Alderwick"
+		},
+		{
+			"firstName" : "Jan",
+			"lastName" : "Dufour"
+		}
+	]
+},
+3.db.test1.aggregate([
+    //stage-1
+    {$group : { _id : "$address.country", count : {$sum :1},amkDekhaoName: {$push : "$$ROOT"}}}------------------------->sob data dekhabe
+])------------------------------------------------------------->prottek group ke Array of object akare dekhay
+
+4.Output
+/* 1 */
+{
+	"_id" : "Vietnam",
+	"count" : 2,
+	"amkDekhaoName" : [
+		{
+			"_id" : ObjectId("6406ad64fc13ae5a40000077"),
+			"name" : {
+				"firstName" : "Gilly",
+				"lastName" : "Ipplett"
+			},
+			"email" : "gipplettj@mapquest.com",
+			"phone" : "(271) 6002826",
+			"gender" : "Female",
+			"age" : 81,
+			"birthday" : "7/8/2022",
+			"address" : {
+				"street" : "763 Jenifer Crossing",
+				"city" : "Cầu Giấy",
+				"country" : "Vietnam"
+			},
+			"company" : "Realbridge",
+			"favoutiteColor" : "Aquamarine",
+			"friends" : [ "Rasel Ahmed", "Nahid Hasan Bulbul", "Abdur Rakib", "Fahim Ahammed Firoz", "Najmus Sakib" ],
+			"occupation" : "Engineer II",
+			"interests" : [ "Gardening", "Cooking", "Reading" ],
+			"skills" : [ ],
+			"education" : [
+				{
+					"degree" : "Bachelor of Arts",
+					"major" : "Education",
+					"institute" : "University of Mustansiriyah",
+					"year" : 2001
+				},
+				{
+					"degree" : "Associate of Arts",
+					"major" : "Biology",
+					"institute" : "Millsaps College",
+					"year" : 2000
+				},
+				{
+					"degree" : "Master of Fine Arts",
+					"major" : "Art",
+					"institute" : "Institut Supérieur de Management et de Technologie (MATCI)",
+					"year" : 2009
+				}
+			],
+			"languages" : [ "Chinese", "Oriya", "Dutch" ],
+			"ipAddress" : "209.238.234.36",
+			"salary" : 149
+		},
+		{
+			"_id" : ObjectId("6406ad64fc13ae5a40000084"),
+			"name" : {
+				"firstName" : "Belle",
+				"lastName" : "Busk"
+			},
+			"email" : "bbuskw@scientificamerican.com",
+			"phone" : "(640) 2495293",
+			"gender" : "Female",
+			"age" : 45,
+			"birthday" : "1/8/2023",
+			"address" : {
+				"street" : "694 Brown Hill",
+				"city" : "Phú Lộc",
+				"country" : "Vietnam"
+			},
+			"company" : "Browsetype",
+			"favoutiteColor" : "Red",
+			"friends" : [ "Najmus Sakib", "Mir Hussain", "Rasel Ahmed", "Fahim Ahammed Firoz", "Mizanur Rahman" ],
+			"occupation" : "Senior Quality Engineer",
+			"interests" : [ "Reading", "Travelling", "Gaming" ],
+			"skills" : [
+				{
+					"name" : "C++",
+					"level" : "Intermidiate",
+					"isLearning" : false
+				},
+				{
+					"name" : "JAVASCRIPT",
+					"level" : "Expert",
+					"isLearning" : false
+				},
+				{
+					"name" : "JAVASCRIPT",
+					"level" : "Beginner",
+					"isLearning" : true
+				}
+			],
+			"education" : [
+				{
+					"degree" : "Juris Doctor",
+					"major" : "Biology",
+					"institute" : "California State University, Stanislaus",
+					"year" : 1999
+				},
+				{
+					"degree" : "Doctor of Medicine",
+					"major" : "Biology",
+					"institute" : "Ural State Academy of Mining and Geology",
+					"year" : 2007
+				}
+			],
+			"languages" : [ "Tswana", "Icelandic", "New Zealand Sign Language" ],
+			"ipAddress" : "71.15.125.25",
+			"salary" : 306
+		}
+	]
+},
+
+
+5.db.test1.aggregate([
+    //stage-1
+    {$group : { _id : "$address.country", count : {$sum :1},fullDoc: {$push : "$$ROOT"}}}
+]),
+//stage-2
+{
+    $project:{
+        "fullDoc.name":1,"fullDoc.email":1,"fullDoc.phone":1----------------------->full doc theke name,email,phone dekhabe
+    }
+}
+
+
+
+                                                 ============================$group vs $unwind===============================
+
+
+1.db.test1.aggregate([
+    //stage-1
+    {$group : { _id : "$friends"}}
+    ])--------------------------------->array onujayi group kore but same value("mizanur")  koyekta array te thakte pare. mane sothik vabe hoy na
+
+
+
+2.                                                              {
+                                                                    _id:ObjectId("83746539283647469374347364")
+                                                                    course:"Level-2",
+                                                                    mentors:["Mir","Tonmoy","Firoz","Mizan","Nahid"]
+                                                                 }
+                                                                
+                                             After  $unwind  5 document will be created as mentors array has 5 element with same _id and course
+                                      
+  {
+    _id:ObjectId("83746539283647469374347364")
+    course:"Level-2",
+    mentors:["Mir"]
+  }
+  {
+     _id:ObjectId("83746539283647469374347364")
+    course:"Level-2",
+    mentors:["Tonmoy"]
+  }
+  {
+     _id:ObjectId("83746539283647469374347364")
+    course:"Level-2",
+    mentors:["Firoz"]
+  }
+  {
+     _id:ObjectId("83746539283647469374347364")
+    course:"Level-2",
+    mentors:["Mizan"]
+  }
+  {
+     _id:ObjectId("83746539283647469374347364")
+    course:"Level-2",
+    mentors:["Nahid"]
+  }
+
+
+
+3.db.test1.aggregate([
+    //stage-1
+    {$unwind : "$friends"},
+    //stage-2
+    {$group : { _id : "$friends", count : { $sum : 1}}}
+    ])
+
+4.Output:
+/* 1 */
+{
+	"_id" : "Fahim Ahammed Firoz",
+	"count" : 57
+},
+
+/* 2 */
+{
+	"_id" : "Najmus Sakib",
+	"count" : 43
+},
+
+/* 3 */
+{
+	"_id" : "Mir Hussain",
+	"count" : 52
+},
+
+/* 4 */
+{
+	"_id" : "Abdur Rakib",
+	"count" : 46
+},
+
+/* 5 */
+{
+	"_id" : "Mezbaul Abedin",
+	"count" : 40
+},
+
+/* 6 */
+{
+	"_id" : "Nahid Hasan Bulbul",
+	"count" : 40
+},
+
+/* 7 */
+{
+	"_id" : "Rasel Ahmed",
+	"count" : 47
+},
+
+/* 8 */
+{
+	"_id" : "Tanmoy Parvez",
+	"count" : 42
+},
+
+/* 9 */
+{
+	"_id" : "Jhankar Mahbub",
+	"count" : 42
+},
+
+/* 10 */
+{
+	"_id" : "Mizanur Rahman",
+	"count" : 40
+}
+
+
+5.unwind er maddhome sob document er friends array ke break kore group kori
+
+
+
+6.db.test1.aggregate([
+    //stage-1
+    {$unwind : "$interests"},--------------------------------------------->All the documents interests array breackdown
+    //stage-2
+    {$group : { _id : "$age", interestsPerAge : {$push : "$interests"}}}--->age field er vittite group korlam such as 18 age er ki ki interest ase. $push er maddhome interests guloke InterestPerage array te push kore array akare dekhalam
+    ])
+
+7.Output:
+/* 1 */
+{
+	"_id" : 19,
+	"interestsPerAge" : [ "Travelling", "Reading", "Writing" ]
+},
+
+/* 2 */
+{
+	"_id" : 83,
+	"interestsPerAge" : [ "Reading", "Cooking", "Writing" ]
+},
+
+
+
+
+                                                              =====================================$bucket===================================
+
+
+1.db.test1.aggregate([
+    //stage-1
+    {$bucket: {
+          groupBy: "$age",---------------------------------------->age er upor vitti kore group korbo
+          boundaries:[20,40,60,80],------------------------------->0 theke 19 age  er moddhe koyjon ase,20 theke 39 age er moddhe koyjon ase evabe
+          default:"*0 er uporer buragula",------------------------>80 theke 80 er uporer age er koyjon ase
+          output:
+          {
+              count : {$sum : 1},
+              karakaraAse: {$push: "$name"}----------------->prottek group er namgula array of object akare asbe
+          }
+    }}
+    ])
+
+
+2.Output
+{
+	"_id" : 20,
+	"count" : 14,
+	"karakaraAse" : [
+		{
+			"firstName" : "Mariele",
+			"lastName" : "Dangl"
+		},
+		{
+			"firstName" : "Ahmad",
+			"lastName" : "McCurry"
+		},
+		{
+			"firstName" : "Rudolf",
+			"lastName" : "Seres"
+		},
+		{
+			"firstName" : "Malinda",
+			"lastName" : "Duly"
+		},
+		{
+			"firstName" : "Morton",
+			"lastName" : "Madgwick"
+		},
+		{
+			"firstName" : "Cacilie",
+			"lastName" : "Boyack"
+		},
+		{
+			"firstName" : "Gussie",
+			"lastName" : "Loveitt"
+		},
+		{
+			"firstName" : "Henderson",
+			"lastName" : "Chevis"
+		},
+		{
+			"firstName" : "Virgil",
+			"lastName" : "Aron"
+		},
+		{
+			"firstName" : "Jan",
+			"lastName" : "Dufour"
+		},
+		{
+			"firstName" : "Conrade",
+			"lastName" : "Enstone"
+		},
+		{
+			"firstName" : "Jacky",
+			"lastName" : "Aves"
+		},
+		{
+			"firstName" : "Clemmie",
+			"lastName" : "Bortolozzi"
+		},
+		{
+			"firstName" : "Joyann",
+			"lastName" : "Heartfield"
+		}
+	]
+},
+
+
+
+3.db.test1.aggregate([
+    //stage-1
+    {$bucket: {
+          groupBy: "$age",
+          boundaries:[20,40,60,80],
+          default:"*er uporer buragula",
+          output:
+          {
+              count : {$sum : 1},
+              karakaraAse: {$push: "$$ROOT"}------------------------>pura document pabo
+          }
+    }}
+    ])
+
+
+
+
+                                                                  ========================================sort and $sort==================================
+
+
+
+1.db.test1.find({}).sort({ age : -1}).project({age :1})--------------------->decending order e sort hosse
+2.db.test1.find({}).sort({ age : 1}).project({age :1})----------------------->accending order e sort hosse
+3.b.test1.aggregate([
+    //stage-1
+    {$bucket: {
+          groupBy: "$age",
+          boundaries:[20,40,60,80],
+          default:"*er uporer buragula",
+          output:
+          {
+              count : {$sum : 1},
+              karakaraAse: {$push: "$$ROOT"}
+          }
+    }},
+    //stage-2
+    {
+        $sort: {count: -1}---------------->count er upor decending order e sort korse
+    },
+    //stage-3
+    {
+        $project :{
+            count:1
+        }
+    }
+    ])
+
+
+
+                                                              =================================================$limit=========================================
+
+
+
+1.db.test1.find({}).sort({ age : 1}).project({age :1}).limit(2)
+2.db.test1.aggregate([
+    //stage-1
+    {$bucket: {
+          groupBy: "$age",
+          boundaries:[20,40,60,80],
+          default:"*er uporer buragula",
+          output:
+          {
+              count : {$sum : 1},
+              karakaraAse: {$push: "$$ROOT"}
+          }
+    }},
+    //stage-2
+    {
+        $sort: {count: -1}
+    },
+    //stage-3
+    {
+        $limit  : 2------------------------------------->sudhu 2 ta document dibe
+    },
+    //stage-4
+    {
+        $project :{
+            count:1
+        }
+    }
+    ])
+
+
+
+
+
+
+
+
+                                                                    ===========================================================================
+                                                                    ========================================$facet=============================
+                                                                    ===========================================================================
+
+
+1.using $facet we can make multiple pipeline
+
+
+
+
+                                                           
+                                                          |----------->sub pipeline 1------------>output
+                                                          |
+                                                          |
+                                                          |
+                          Same data----->$facet---------->|----------->sub pipeline 2------------>output
+                                                          |
+                                                          |
+                                                          |
+                                                          |----------->sub pipeline 3------------>output
+
+
+{
+  db.practice.aggregate([
+     {
+       $facet:{
+           [],//pipeline-1
+           [],//pipeline-2
+           [],//pipeline-3
+           ---------------
+           }
+          }
+        ])
+}
+--------->same data theke multiple report create korar khetre multiple pipeline use kora hoy
+--------->ak pipeline er data er sathe onno pipeline er data nirvor kore na
+---------> 3 ta pipeline parallely chole
+
+
+
+db.test1.aggregate([
+    {
+        $facet:{
+            //pipeline-1
+            "friendsCount":[
+                //stage-1
+                {$unwind: "$friends"},
+                //stage-2
+                {$group: {_id: "$friends", count: {$sum:1}}},
+                ],
+                //pipeline-2
+            "educationCount":[
+                //stage-1
+                {$unwind: "$education"},
+                //stage-2
+                {$group: {_id: "$education", count: {$sum:1}}},
+                ],
+                //pipeline-3
+            "skillsCount":[
+                //stage-1
+                {$unwind: "$skills"},
+                //stage-2
+                {$group: {_id: "$skills", count: {$sum:1}}},
+                ]
+        }
+    }
+    ])
+
+
+output:
+
+{
+	"friendsCount" : [
+		{
+			"_id" : "Mizanur Rahman",
+			"count" : 40
+		},
+		{
+			"_id" : "Jhankar Mahbub",
+			"count" : 42
+		}
+]
+}--------------------------------->just like this other output will be created
+
+
+
+
+
+
+
+
+                                                          =========================Embedded vs Referencing====================
+
+Embeddedd
+--------------
+1.One-to-one Relationship
+2.Frequent Reading Data
+3.Atomic updates
+4.Reduced Network overhead
+5.Small Data Size
+
+
+Referencing
+-------------
+1.One to many relationships
+2.many to many
+3.Frequent Writting
+4.big data size
+5.scalability
+flexibility
+
+
