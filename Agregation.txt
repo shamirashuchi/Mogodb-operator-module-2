@@ -895,3 +895,132 @@ Referencing
 flexibility
 
 
+
+
+1.iserId in the orders collection refers _id in the test1 collection
+2.find an userId in the test1 collection----------------->db.test1.find({_id : ObjectId("6406ad63fc13ae5a40000065")});--------------->run this query in test1 collection
+
+
+
+                                                  ================================$lookup(referencing)================================
+
+
+1.Order collection e product ase but user data nai. user er data test1 collection theke jante hbe.
+2.db.Orders.aggregate([
+    {
+        $lookup: {
+               from: "test1",--------------------->test1 collection e khujbo ba lookup korbo
+               localField: "userId",--------------->orders collection e UserId diye test1 collection e match korbe
+               foreignField: "_id",---------------->test1 collection e _id er sathe match korbe
+               as: "user"--------------------------->data dekhbo user name
+             }
+    }
+    ])
+3.lookup 2 collection er data id diye join koray sob data aksathe dekhay
+
+
+                                                ================================COLLSCAN============================
+1.line by line khoja
+2.db.test1.find({"email" : "weffnert2r@networkadvertising.org"}).explain("executionStats");
+3."stage" : "COLLSCAN"
+
+                                                ===============================Indexing(IXSCAN)==============================
+
+1.kon information kothay ase ta index onujayi accending ba decending onushare sazano thake.index e topic khuje paoyer por oi index e giye details  nibo.
+
+2.db.test1.find({_id : ObjectId("6406ad63fc13ae5a40000065")}).explain("executionStats");
+3."stage" : "IDHACK" here IDHACK is special type of indexing
+4.mongodb document rakhar somoy by default 1 ta id create kore and index o create kore rakhe. Tai id diye search korle taratari data pai.
+
+
+
+
+                                           ===============================createindexing==================================
+
+
+1.db.getCollection("massive-data").createIndex({email:1})-------------------->mongodb te indexes e email_1 name index chole asbe
+2.{
+	"numIndexesBefore" : 1,
+	"numIndexesAfter" : 2,
+	"createdCollectionAutomatically" : false,
+	"ok" : 1
+}-------------------------------->output asbe
+
+3.ebar email diye mongodb te scan korle IXSCAN hbe.
+
+
+
+                                         =================================dropindexing======================================
+
+
+1.db.getCollection("massive-data").dropIndex({email:1})
+
+
+
+                                        ==================================Single index======================================
+
+1.db.getCollection("massive-data").createIndex({email:1}) just one field er upor indexing korle take single indexing bole.
+
+
+                                        ==================================compound index===================================
+
+
+1.multiple field er upor indexing korle compound index hoy like gender and age field er upor indexing korsi.(gender er upor decending karon female age ase r male pore .decending korle male age asbe. age e acending kortesi jate 21 age ase)
+
+2.indexes+create Index+gender+dec(-1)+click +   +age+ace(1) + create Index
+
+3.{"gender": "male", "age": 21}  find kore explain e gele IXSCAN dekhabe
+
+
+
+                                       ====================================search index===================================
+
+1.db.getCollection("massive-data").createIndex({ about : "text" })-------->about field e multiple text er modddhe specific kono text ke search kora
+
+2.db.getCollection("massive-data").find({ $text : { $search : "dolor"}}).project({about:1})------------>text search korbo  and search korbo dolor text ke
+
+
+
+Practice Task: MongoDB Aggregation
+
+
+
+Question 1:
+-Retrieve the count of individuals who are active (isActive: true) for each gender.
+
+Question 2:
+- Retrieve the names and email addresses of individuals who are active (`isActive: true`) and have a favorite fruit of "banana."
+
+Question 3:
+- Find the average age of individuals for each favorite fruit, then sort the results in descending order of average age.
+
+ Question 4:
+- Retrieve a list of unique friend names for individuals who have at least one friend, and include only the friends with names starting with the letter "W."
+
+Hints: Explore how to use regex [ "friends.name": /^W/]
+
+Question 5:
+- Use $facet to separate individuals into two facets based on their age: those below 30 and those above 30. Then, within each facet, bucket the individuals into age ranges (e.g., 20-25, 26-30, etc.) and sort them by name within each bucket.
+
+
+Question 6:
+- Calculate the total balance of individuals for each company and display the company name along with the total balance. Limit the result to show only the top two companies with the highest total balance.
+
+Hints: Explore $slice, $split. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1.npm init + yarn add express + enter + yarn add -D typescript  + enter
+2.tsc --init +inter (tsconfig.js file will be created)
+3.yarn add -D @types/node

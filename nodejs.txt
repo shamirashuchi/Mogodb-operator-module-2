@@ -1,0 +1,113 @@
+node.js modules
+==================
+
+1.Operating system Module(os)
+2.File system Module(fs)
+3.Path Module(path)
+4.HTTP Module(http)
+5.URL Module(url)
+6.Utilities Module(util)
+
+Why node.js is popular?
+=============================
+
+1.We can use javascript on server side
+2.Build Higly scalable backend application
+3.It is single threaded, event driven and works non blocking I/O
+4.Perfect building data intensive , streaming application
+
+Cons of using node.js
+=============================
+1.Highly cpu intensive tasks but we can do using worker threads.
+
+v8 Engine
+================
+1.Node js runtime is based on v8 Engine written in c++ and javascript. Without v8 NodeJS would never understand javascript code.v8 is the most important dependencies of Nodejs.
+
+Libuv
+============
+
+1.Libuv is an open source library written on c++ which focuses on asynchronous I/o and gives node access to computer OS, file Systems,Networking etc
+
+
+Libuv implements 2 important parts of Node Js
+===============================================
+1.Event Loop
+2.Thread Pool
+
+
+Event Loop
+=============
+1.Execute callback functions
+2.Network I/o
+
+Thread Pool
+==============
+1.CPU intensive Tasks
+2.File Access
+3.File Compression
+4.Cryptography
+
+Node.js Process
+================
+
+File Reading,Data,Query er request nodejs single thread er maddhome handle kore
+
+
+
+What is module
+========================
+A module is an isolated and resuable block of code that has its own scope
+
+
+
+
+npm init + enter + npm install express + enter + npm install typescript --save-dev + enter + tsc --init (for tsconfig file)+  change rootDir and outDir + const express = require('express') change to this import express from 'express'.
+Then give error  + Could not find a declaration file for module 'express'. 'd:/web development/Next-level-web-dev/Milestone-2/practice-1/node_modules/express/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/express` if it exists or add a new declaration (.d.ts) file containing `declare module 'express';`+npm i --save-dev @types/express+ enter(to solve the error)
+
+
+
+tsc+ enter(to convert typescript to javascript)+node dist/server.js+enter(to run server)+localhost:5000+enter(in browser)
+
+tsc -w + enter dile typescript e kono change hole automatically change korbe js e
+________
+|  |   |
+________     diye arekta terminal open korte hbe. tsc -w ke chalu rakhe deyer jonno.
+
+
+npm install --save-dev nodemon+ enter
+scripts e add korbo:
+"scripts": {
+    "start:dev":"nodemon ./dist/server.js",
+Terminal e npm run start:dev + enter((to run server.js or server automatically))
+
+
+
+
+app.get('/', (req : Request, res : Response) => {
+  res.send('Hello Worldddd!')
+})
+Request Response import from express
+
+
+
+postman(Api testing tool to see backend tools work) + Postman API Platform | sign up for free +  
+
+Create workspace by giving name and use for personal.
+
+body+raw+text select json in postman
+data should be given as {
+    "course": "level-2"
+}
+
+
+dynamic(id diye khoja) er khettre req.body er poriborte req.param use korte hbe.
+
+http://localhost:3000?email=mezba@gmail.com&name=mezba(search in postman for query)
+
+
+
+
+
+
