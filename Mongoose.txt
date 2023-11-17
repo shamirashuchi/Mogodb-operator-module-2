@@ -1,0 +1,323 @@
+
+                                            Mongoose
+                       =================================================
+
+A powerful Object Data Modeling Library for MongoDB.
+
+data-->object Data Mapping(Object ke amra je model korbo tar sathe mapping korbe)--->mongoose{}--->Mongodb driver-->mongodb
+
+1.Model.create()
+2.Model.find()
+3.Model.findById()
+4.Model.findByIdAndUpdate()
+5.Model.findOne()
+6.Model.findOneAndDelete()
+7.Model.replaceOne()
+8.Model.updateMany()
+9.Model.updateOne
+
+
+                      ==========================MongoDB=======================
+1.find()
+2.findOne()
+3.count()
+4.update()
+5.delete()
+
+
+                      =========================Why we should we use mongoose=============
+1.Schema Definition
+2.Model Creation
+3.Data Validation
+4.Querying
+5.Middleware Support
+6.Population
+
+
+                  ================================Eslint===============================
+1.code format
+2.find Errors
+3.Code quality check
+
+
+                   ===============================Prettier=============================
+Code format
+
+
+                   ===============================project==========================
+
+1.npm init -y ------>initilize package.json
+2.Expressjs+https://expressjs.com+ Getting started+npm install express---------->install express
+3.Mongoose+ Mongoose ODM v8.0.0+quick start guide+npm install mongoose --save--->install mongoose
+4.Typescript+ Typescript javascript with syntax for types+Download+npm install typescript --save-dev--->install Typescript
+5.cors npm + npmjs+npm i cors------->to install cors
+6.Dotenv+npmjs+npm i dotenv------->to access environment variable
+7.tsc -init----->to initialize tsconfig.json for typescript
+8.create folder src and app.ts file in src
+9.Write Hello world code of express by copping it in app.ts file
+10.go to tsconfig file+ ctrl f + rootdir + uncomment and set to ./src + outdir+uncomment and set to ./dist
+11.in package.json file +"scripts": {
+    "build":"tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },--------------->in terminal + npm run build+ enter----------->create dist with app.js file
+12.create server.ts in src folder.
+copy
+app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`)
+  })
+from app.ts to server.ts
+13.copy require mongoose and main function from mongoose to server.ts
+const mongoose = require('mongoose');
+async function main() {
+  await mongoose.connect('mongodb://127.0.0.1:27017/test');
+}
+14.create .env file and give PORT=5000 
+15.Mongodb atlas+Mongodb atlas database (Multi cloud database service)+sign in+Coonect+driver+ copy const uri = "mongodb+srv://<username>:<password>@cluster0.g2hlfdf.mongodb.net/?retryWrites=true&w=majority"; and paste in .env file
+16.Database access + add new databse user + give name and password+ copy the password + Add built in Role to atlas admin+ add user
+17.replace <username> and <password> to real username and password after .net/ give database name
+18.async function main() {
+    await mongoose.connect('process.env.DATABASE_URL');
+  }
+19.change
+app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`)
+  })
+to
+app.listen(process.env.PORT, () => {
+    console.log(`Example app listening on port ${process.env.PORT}`)
+  })
+20.Create folder app in src + Create folder config in app + Create file index.ts in config
+21.import dotenv from "dotenv" in index.ts
+22.import path from "path"
+dotenv.config({path:path.join((process.cwd(),'.env'))})------------>in index.ts------->D:\web development\Next-level-web-dev\Milestone-2\first-project
+console.log(process.cwd())-----> to get current directory
+then .env diye join diye .env file er directory pabo-->D:\web development\Next-level-web-dev\Milestone-2\first-project\.env
+if we 
+1.console.log(process.cwd()); in app.ts-----> to get current directory
+2.npm run build
+3.node .\dist\app.js
+do this we can see the current directory
+23.add 
+export default{
+    port: process.env.PORT,
+    database_url: process.env.DATABASE_URL
+}
+in index.ts
+24.change 
+async function main() {
+    await mongoose.connect('process.env.DATABASE_URL');
+  }
+app.listen(process.env.PORT, () => {
+    console.log(`Example app listening on port ${process.env.PORT}`)
+  })
+to
+async function main() {
+    await mongoose.connect(config.database_url);
+  }
+app.listen(config.port, () => {
+    console.log(`Example app listening on port ${config.port}`)
+  })
+make sure import config
+25.convert 
+const express = require('express')
+to
+import express from 'express'
+26.npm i --save-dev @types/express+ enter to solve the error because nodejs dont give typescrypt
+27.convert 
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+to
+app.get('/', (req: Request, res: Response) => {
+  res.send('Hello World!')
+})
+import Request Response from express
+28.convert
+const app = express()
+to
+const app : Application = express()
+import Application from express
+29.convert 
+const mongoose = require('mongoose');
+to
+import mongoose from "mongoose";
+30.convert
+async function main() {
+    await mongoose.connect(config.database_url);
+  }
+to
+async function main() {
+    await mongoose.connect(config.database_url as string);
+  }
+31.Add
+app.listen(config.port, () => {
+        console.log(`Example app listening on port ${config.port}`)
+      })
+like this
+async function main() {
+    await mongoose.connect(config.database_url as string);
+    app.listen(config.port, () => {
+        console.log(`Example app listening on port ${config.port}`)
+      })
+  }
+32.export default app in app.ts
+33.import app in server.ts
+34.convert
+async function main() {
+    await mongoose.connect(config.database_url as string);
+    app.listen(config.port, () => {
+        console.log(`Example app listening on port ${config.port}`)
+      })
+  }
+to
+async function main() {
+    try{
+        await mongoose.connect(config.database_url as string);
+    app.listen(config.port, () => {
+        console.log(`Example app listening on port ${config.port}`)
+      })
+    }
+    catch(error)
+    {
+        console.log(error);
+    }
+    
+  }
+35.use express.json parser
+app.use(express.json())
+35.use cors and import
+app.use(cors())
+34.npm i --save-dev @types/cors+enter
+35.typescript eslint prettier setup+ LogRocket Blog+Compiling TypeScript code er niche copy korbo
+//tsconfig.json er 
+"include": ["src"], // which files to compile
+  "exclude": ["node_modules"], // which files to skip
+ei 2 line and paste in first 2 line in tsconfig.json
+36.What is ESLint? er copy korbo
+npm install eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin --save-dev and give in terminal + enter+npx eslint --init+enter+y+enter+to check syntax and find problem+ enter+javascript module(import and export)+enter+none of this + enter+yes+enter+node+enter+JSON+enter+yes+enter+npm+enter
+
+37.Linting with ESLint er niche copy korbo
+"@typescript-eslint/no-unused-vars": "error"
+and paste kobo .eslintrc.json file er rules e add korbo.
+38.create a file .eslintignore in root directory and add 
+node_modules
+dist
+39.copy
+"lint": "eslint --ignore-path .eslintignore --ext .js,.ts"
+and add in package.json like this
+"scripts": {
+    "build": "tsc",
+    "lint": "eslint src--ignore-path .eslintignore --ext .ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+40. write
+app.get('/', (req: Request, res: Response) => {
+    var a = 10;
+    res.send(a);
+//   res.send('Hello World!')
+})
+in app.ts
+41.npx eslint src . + enter(to check problem)
+42.npx run lint dileo problem check kore dibe
+43.remove const port = 3000 from app.ts
+44.main() in server.ts
+45.npx eslint src --fix + enter(solve the problem of using var in app.ts)
+app.get('/', (req: Request, res: Response) => {
+    const a = 10;
+    res.send(a);
+//   res.send('Hello World!')
+})---------------->automatically const kore dise
+46.Add
+"lint:fix":"npx eslint src --fix",
+in package.json like this
+ "scripts": {
+    "build": "tsc",
+    "lint": "eslint src  --ignore-path .eslintignore --ext .ts",
+    "lint:fix":"npx eslint src --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },-------------------->if npm run lint:fix called from terminal automatically solve the problem
+47.modify eslintrs.json like this
+"rules": {
+        "no-unused-vars": "error",
+        "no-unused-expressions": "error",--->declare kore bebohar na kora
+        "prefer-const": "error",-------------->let jate na dei
+        "no-console": "warn",------------->app.ts r server.ts e shudhu console.log korbo. bakigulate na
+         "no-undef":"error",--------------->Kono undefined thakbe na
+         "globals":{
+        "process" : "readonly"--------------->process nam er global variable ase
+    }
+    }
+48.let using in app.ts
+npm run lint ------------> to get the error
+49.Integrating Prettier + npm install --save-dev prettier + enter
+50.create .prettierrc.json file and add
+{
+  "semi": false, // Specify if you want to print semicolons at the end of statements
+  "singleQuote": true, // If you want to use single quotes
+  "arrowParens": "avoid", // Include parenthesis around a sole arrow function parameter
+}
+51.clear  the cooment and last comma
+52.modify .prettier.json file like this
+{
+    "semi": true,
+    "singleQuote": true
+  }
+53.npx prettier --write src/index.ts--------->file er bivinno nam diye extra space bad deya jay
+54.copy
+"format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
+and paste in package.json like this----------->rename format to prettier
+"scripts": {
+    "build": "tsc",
+    "lint": "eslint src  --ignore-path .eslintignore --ext .ts",
+    "lint:fix": "npx eslint src --fix",
+    "prettier": "prettier --ignore-path .gitignore --write \"./src/**/*.+(js|ts|json)\"",----->give src directory
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+ fole npm run prettier remove extra space
+55.bampaser setting er moto dekhte manage click+ setting +arrow o file er moto dekhte click korle package.json open hbe+add "editor.defaultFormatter": "esbenp.prettier-vscode",
+56.go to extension + search eslint + integrates eslint javascript + search prettier co formating and install it
+57.Avoiding conflicts when working with ESLint and Prettier er niche copy korbo
+npm install --save-dev eslint-config-prettier + enter
+58.copy 
+"extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
+and paste and replace eslintrc er extends
+59. update package.json just like this
+"scripts": {
+    "build": "tsc",
+    "lint": "eslint src  --ignore-path .eslintignore --ext .ts",
+    "lint:fix": "npx eslint src --fix",
+    "prettier": "prettier --ignore-path .gitignore --write \"./src/**/*.+(js|ts|json)\"",
+    "prettier:fix": "npx prettier --write src",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+npm run prettier:fix + enter
+ctrl+s dileo automatically kaj kore
+60.create .gitignore file and node_modules
+dist
+.env
+61.npm run build(to create javascript)
+62.node .\dist\server.js + enter
+63.Mongodb atlas + network atlas + Add ip address + Allow access from anywhere+confirm------>to solve error(amar khetre lage nai)
+64.search ts-node-dev + npmjs + github of dev(2nd)+ npm i ts-node-dev --save-dev + enter
+usage e ts-node-dev --respawn --transpile-only src/server.ts + enter(lagbe na)
+65.modify package.json  like this
+ "scripts": {
+    "start:prod": "node ./dist/server.js",
+    "start-dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "lint": "eslint src  --ignore-path .eslintignore --ext .ts",
+    "lint:fix": "npx eslint src --fix",
+    "prettier": "prettier --ignore-path .gitignore --write \"./src/**/*.+(js|ts|json)\"",
+    "prettier:fix": "npx prettier --write src",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+66.add in .env like this
+NODE_ENV=development
+67.
+
+
+
+
+
+
+
