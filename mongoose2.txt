@@ -1,0 +1,114 @@
+
+                              ==============Software design pattern==============
+use 2 types
+1.MVC
+2.Modular
+
+                              ========================MVC========================
+1.routes
+2.models
+3.views
+4.controllers
+
+model view controller theke MVC asse. age typescript er jonno interface nitam.
+interface------->sob interface thakto
+routes--------->sob routes thakto
+models--------->sob model thakto
+views----------->use tamplate engine
+controllers----->sob controller thakto
+fole change korte hoile sobgulate jaite hoy. time consuming.
+
+
+Express diye server side rendering korle html toirir jonno dynamic vabe tamplate engine lage.some tamplate engines are-->pug,handlebars,ejs
+After comming client side library->react,vue,angular we use this pattern less
+
+
+
+                            ===================Modular Pattern====================
+
+1.prottek feature er jonno module create kora hoy.jmn student module e student interface,student routes,student controller,student service thake.student e change korte chaile student module e gelei hbe.
+
+
+Benefit of using Modular Pattern:
+=================================
+
+1.Scaliblity------------->jekono somoy jekono module baraite pari ba komaite pari
+2.Maintainiblity
+3.Better refactoring----->multiple developer can work. one can work with student module and one can work with admin module.
+4.Efficient development
+
+
+                   ==============================Modular pattern in javascript======================
+
+mongoose express er sathe use korle first e typescript er jonno interface use korbo then  data er jonno schema toiri korte hbe trpr model create korte hbe trpr DB query toiri korte hbe model er jonno.
+
+
+                   ===============================file struchture================================
+
+1.create modules folder in app + create student folder in modules + create student.interface.ts file in student
+
+
+                    ===============================student.interface.ts============================
+
+1. go to typescript in mongoose  documantation
+2.copy
+import { Schema, model, connect } from 'mongoose';
+3.create type for student
+4.
+
+
+               ===============Request response flow of modular pattern=========================
+
+
+client request korbe route e . route controller function ke call korbe . controller function  service e call dibe. service  model er upor query chalaye mongodb theke data anbe .  data ane controller ke dibe.  controller response hisebe client ke pathay dibe.
+response have success,message and data.
+
+                      ==========================post=======================
+route theke controller e . controller theke service e. service databse e data save korbe.
+
+                      ========================postman=========================
+
+postman + Recently visited workspace shamira shamsee + + + Blank collection + new collection er pashe ... e click kore + rename +first-project + enter + first project er pase ... + Add request + new request e click kore nam diye enter + Enter url e http://localhost:5000/api/v1/student//create-student + select method post + Body te raw te json kore data dibo
+{
+    "student": {
+        "id": "12345",
+        "name": {
+            "firstName": "John",
+            "middleName": "Doe",
+            "lastName": "Smith"
+        },
+        "gender": "male",
+        "dateOfBirth": "1990-01-01",
+        "email": "john.doe@example.com",
+        "contactNo": "1234567890",
+        "emergencyContactNo": "9876543210",
+        "bloodGroup": "A+",
+        "presentAddress": "123 Main Street, City",
+        "permanentAddress": "456 Oak Avenue, Town",
+        "guardian": {
+            "fatherName": "Robert Doe",
+            "fatherOccupation": "Engineer",
+            "fatherContactNo": "1112223333",
+            "motheName": "Alice Doe",
+            "motherOccupation": "Doctor",
+            "motherContactNo": "4445556666"
+        },
+        "localguardian": {
+            "name": "Susan Johnson",
+            "occupation": "Business Owner",
+            "contactNo": "7778889999",
+            "address": "789 Pine Lane, Village"
+        },
+        "profileImg": "path/to/profile/image.jpg",
+        "isActive": "active"
+    }
+}
+ei format e
+npm run start-dev to run the server
+
+                  ===================connect mongodb with compass=======================
+paste the uri from .env + save + give name + save + connect
+
+
+                ====================get in postman=====================
+create another request in postman + http://localhost:5000/api/v1/student
