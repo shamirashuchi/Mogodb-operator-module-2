@@ -64,7 +64,7 @@ client request korbe route e . route controller function ke call korbe . control
 response have success,message and data.
 
                       ==========================post=======================
-route theke controller e . controller theke service e. service databse e data save korbe.
+route theke controller e . controller postman theke data receive kore. controller theke service e.service check kore schema  thik ase kina . service databse e data save korbe.
 
                       ========================postman=========================
 

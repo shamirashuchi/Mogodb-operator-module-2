@@ -1,0 +1,39 @@
+{
+    "student":{
+  "id": "12345",
+  "name": {
+    "firstName": "mohon",
+    "middleName": "Doe",
+    "lastName": "Smith"
+  },
+  "gender": "male",
+  "dateOfBirth": "1990-01-01",
+  "email": "john.doe@example.com",
+  "contactNo": "1234567890",
+  "emergencyContactNo": "9876543210",
+  "bloodGroup": "A+",
+  "presentAddress": "123 Main Street, City",
+  "permanentAddress": "456 Oak Avenue, Town",
+  "guardian": {
+    "fatherName": "Robert Doe",
+    "fatherOccupation": "Engineer",
+    "fatherContactNo": "1112223333",
+    "motheName": "Alice Doe",
+    "motherOccupation": "Doctor",
+    "motherContactNo": "4445556666"
+  },
+  "localguardian": {
+    "name": "Susan Johnson",
+    "occupation": "Business Owner",
+    "contactNo": "7778889999",
+    "address": "789 Pine Lane, Village"
+  },
+  "profileImg": "path/to/profile/image.jpg",
+  "isActive": "active"
+}
+}
+
+http://localhost:5000/api/v1/student/create-student
+
+
+                      

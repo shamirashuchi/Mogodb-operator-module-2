@@ -1,0 +1,91 @@
+
+                              =================================================
+                              ===========Mongoose validation===================
+                              =================================================
+
+data client side theke pathale mongoose validation kore. then validate hole mongoose driver er sahajje
+database e store kore.
+
+mongoose provide 3 types of validation:
+======================================
+
+1.builtin validation : mongoose provide us----------------->validation+built in validator
+firstname:{
+type : string,
+required:[true,'First name is required']
+}
+
+2.custom validation->custom function lekhe validation korte pari
+contact No:{
+  type:String,
+validate:{
+validator: function(value){
+return /^01\d{9}$/.test(value);
+},
+message:'Invalid phone number first'
+},
+},
+
+3.third party validation libraries(validator/zod/joi)
+import {z} from 'zod';
+const schema z.object({
+contactNo: z.string().refine((value) =>
+/^01\d{9}$/.test(value),{
+message:'Invalid phone number form data'
+}),
+})
+
+
+                                                        ======================================================================
+                                                        ================================trim==================================
+                                                        ======================================================================
+
+
+remove extra space before and after property. if i give "          john@gmail.com" it will be "john@gmail.com"
+
+                                                                         ==========================================
+                                                                         ================Validator=================
+                                                                         ==========================================
+
+validator npm + npmjs +  npm i validator DT(beside validator) + npm i -D @types/validator  + go back + github of Homepage .
+validate er function lekhte hole validate e likhte hoy. Arrow function e this use kora jay na. Tai normal function use kora uchit.
+                
+                                                                          ===============isAlpha================
+isAlpha dont take number.
+
+                                                                          ==================joi validator==================
+
+joi + mpmjs + npm i joi + documentation and api(usage er niche)
+import Joi in controller ------------>import Joi from 'joi';
+
+
+                                                                         ==================zod validator====================
+
+search zod + Zod|Documentation + Installation + Basic usage
+
+                                                                        ==============built in static method=================
+
+
+const result = await StudentModel.create(studentData);
+here StudentModel is a class and create is a built in method. we direct call method through class(StudentModel.create(studentData)).So it is static. So it is called built in static method.
+
+
+                                                                       =============built in instance method================
+
+const student = new StudentModel(studentData);
+  const result = await student.save();
+Here we create a instance of StudentModel class through new keyword and call built in method save through instance so it is called built in instance method.
+
+                                                                       ================
+
+mongoose + Mongoose ODM v8.0.0 + quick start guide + TypeScript + Statics and Methods
+
+
+
+                                                                       ===================Mongoose middleware================
+it is also called mongoose hook.
+
+
+                                                                       ====================Password=========================
+
+Bcrypt + npmJS + npm i bcrypt + DT + npm i -D @types/bcrypt
