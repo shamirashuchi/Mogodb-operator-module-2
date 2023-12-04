@@ -58,30 +58,36 @@ const localguardianSchema = z.object({
 });
 
 const studentvalidationSchemausingzod = z.object({
-  id: z.string().min(1, { message: 'Student ID is required' }),
-  password: z.string().max(20),
-  name: userNameSchema,
-  gender: z.enum(['male', 'female', 'other']),
-  dateofBirth: z.string().optional(),
-  email: z
-    .string()
-    .min(1, { message: 'Email is required' })
-    .email({ message: 'Email is not valid' }),
-  contactNo: z.string().min(1, { message: 'Contact number is required' }),
-  emergencyContactNo: z
-    .string()
-    .min(1, { message: 'Emergency contact number is required' }),
-  bloodGroup: z
-    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
-    .optional(),
-  presentAddress: z.string().min(1, { message: 'Present address is required' }),
-  permanentAddress: z
-    .string()
-    .min(1, { message: 'Permanent address is required' }),
-  guardian: guardianSchema,
-  localguardian: localguardianSchema,
-  profileImg: z.string().optional(),
-  isActive: z.enum(['active', 'blocked']).optional(),
-  isDeleted: z.boolean(),
+  body: z.object({
+    password: z.string().max(20),
+    student: z.object({
+      name: userNameSchema,
+      gender: z.enum(['male', 'female', 'other']),
+      dateofBirth: z.string().optional(),
+      email: z
+        .string()
+        .min(1, { message: 'Email is required' })
+        .email({ message: 'Email is not valid' }),
+      contactNo: z.string().min(1, { message: 'Contact number is required' }),
+      emergencyContactNo: z
+        .string()
+        .min(1, { message: 'Emergency contact number is required' }),
+      bloodGroup: z
+        .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+        .optional(),
+      presentAddress: z
+        .string()
+        .min(1, { message: 'Present address is required' }),
+      permanentAddress: z
+        .string()
+        .min(1, { message: 'Permanent address is required' }),
+      guardian: guardianSchema,
+      localguardian: localguardianSchema,
+      profileImg: z.string().optional(),
+      admissionSemester: z.string(),
+    }),
+  }),
 });
-export default studentvalidationSchemausingzod;
+export const studentvalidations = {
+  studentvalidationSchemausingzod,
+};

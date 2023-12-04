@@ -1,15 +1,12 @@
 import { Schema, model } from 'mongoose';
 import validator from 'validator';
-import bcrypt from 'bcrypt';
 import {
   TGuardian,
   TLocalGuardian,
-  StudentMethod,
   StudentModel,
   TUserName,
   Tstudent,
 } from './student.interface';
-import config from '../../config';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -106,11 +103,11 @@ const studentSchema = new Schema<Tstudent, StudentModel>(
       required: [true, 'Student ID is required'],
       unique: true,
     },
-    password: {
-      type: String,
-      trim: true,
-      required: [true, 'password is required'],
-      maxlength: [20, 'Password can not be more than 20 characters'],
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'User iD is required'],
+      unique: true,
+      ref: 'User',
     },
     name: {
       type: userNameSchema,
@@ -126,7 +123,7 @@ const studentSchema = new Schema<Tstudent, StudentModel>(
       },
       required: [true, 'Gender is required'],
     },
-    dateofBirth: { type: String },
+    dateofBirth: { type: Date },
     email: {
       type: String,
       trim: true,
@@ -169,11 +166,9 @@ const studentSchema = new Schema<Tstudent, StudentModel>(
       required: [true, 'Local guardian information is required'],
     },
     profileImg: { type: String },
-    isActive: {
-      type: String,
-      trim: true,
-      enum: ['active', 'blocked'],
-      default: 'active',
+    admissionSemester: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicSemester',
     },
     isDeleted: {
       type: Boolean,
@@ -190,25 +185,6 @@ const studentSchema = new Schema<Tstudent, StudentModel>(
 //virtual
 studentSchema.virtual('fullname').get(function () {
   return `${this.name.firstName}  ${this.name.middleName}  ${this.name.lastName}`;
-});
-//document middleware
-//pre save middleware/hook : will work on create() and save() function
-studentSchema.pre('save', async function (next) {
-  // console.log(this, 'pre hook : we will save the data');
-  //hashing password and save into db
-  const user = this; //this is the data i send from postman
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_rounds),
-  );
-  next();
-});
-
-//post save middleware/hook
-studentSchema.post('save', function (doc, next) {
-  doc.password = '';
-  console.log('post hook : we saved the data');
-  next();
 });
 
 //query middleware
